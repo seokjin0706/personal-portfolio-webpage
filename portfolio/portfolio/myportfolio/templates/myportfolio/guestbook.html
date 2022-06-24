@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>guestbook</title>
+    <link rel="stylesheet" href="{% static 'css/guest.css'%}">
+
+</head>
+<body>
+
+      <div class="modal">
+        <div class="modal_body">
+            <input id ="modal_pwd"type="text" placeholder="비밀번호를 입력해주세요!">
+            <div class = "checkBar">
+                <button class ="check">
+                    확인
+                </button>
+                <button class="close">
+                    취소
+                </button>
+            </div>
+            
+        </div>
+        
+      </div>
+      
+
+    <div class ="main">
+        <div class = "header">
+            <a href="/">
+                <h1 >SEOKJIN</h1>
+            </a>
+            <h1 class="temp">GUESTBOOK</h1>
+        </div>
+        <div class = "container">
+            
+            <form method="POST" id = "inputPostID">
+                <div class ="guest">
+                    <span>닉네임</span>
+                    <input placeholder="닉네임을 입력해주세요" id = "textName"type="text" name="postname">
+                    <span>비밀번호</span>
+                    <input placeholder="비밀번호를 입력해주세요" id = "textPwd"type="text" name="postpwd">
+                
+                </div>
+                <div class = "guestContent">    
+                    {% csrf_token %}
+                    <textarea placeholder="내용을 입력해주세요" class = "textArea" rows="10" cols="50" name="contents"></textarea>
+                    <button type="button" id = "createBtn" onclick ="inputBtn()" >등록</button>
+
+                    {% comment %} <input id = "submit" name = "createPost" type="submit" value="등록"> {% endcomment %}
+                </div>
+
+            </form>
+
+            <form method ="GET">
+                <div class ="search">
+                    <input placeholder="닉네임을 입력해주세요" id = "searchText" name = "searchContents" type="text">
+                    <button class = "searchBtn" type="submit">검색</button>
+
+                </div>
+
+            </form>
+            
+            <form method="POST"  id ="postID">
+                <div class ="posting">
+                    <input type="hidden" id = "index" name = "index">
+                    <input type="hidden" id = "contents" name = "contents">
+                    
+                    {% for list in postlist %}
+                        <div class = "post">
+                            <br>
+                            <div>
+                                <span class = "postname">[{{list.name}}] {{list.created_date}}</span>
+                                <button style="display:none" onclick="updateContents()" id ="updateFinishBtn{{list.id}}" type="button" >수정 완료</button>
+
+                                <button type="button" id = "updateBtn{{list.id}}" onclick = "getID({'id' : {{list.id}}, 'pwd' : '{{list.pwd}}', 'mode' : 'update'})" >수정</button>
+
+                                <button type="button" onclick = "getID({'id' : {{list.id}}, 'pwd' : '{{list.pwd}}', 'mode' : 'delete'})" >삭제</button>
+
+                                {% comment %} <input id = "submit" name = "deletePost" type="submit" value="삭제" >    {% endcomment %}
+                            </div>
+                            <br>
+                            <textarea class = "textArea" disabled="disabled" id = "textArea{{list.id}}" rows="7" cols="50" name="contents">{{list.contents}}</textarea>
+
+
+                        </div>
+                      
+                    {% endfor%}
+                
+                </div>
+            </form>
+
+        </div>
+      
+</div>
+</body> 
+<script src="{% static 'javascript/post.js' %}"> </script>
+</html>
